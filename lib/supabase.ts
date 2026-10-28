@@ -1,1 +1,7 @@
-import { createClient } from "@supabase/supabase-js";\nconst url = process.env.NEXT_PUBLIC_SUPABASE_URL;\nconst key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;\nexport const supabase = url && key ? createClient(url, key) : null;\n
+import { createClient } from "@supabase/supabase-js";
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+export const supabase =
+  url && key ? createClient(url, key) : null;
