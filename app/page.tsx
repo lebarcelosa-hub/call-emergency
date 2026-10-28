@@ -1,1 +1,211 @@
- "use client";\nimport {useState} from "react"; import {supabase} from "@/lib/supabase";\nexport default function Home(){const [mode,setMode]=useState("signup"),[email,setEmail]=useState(""),[password,setPassword]=useState(""),[notice,setNotice]=useState(""),[busy,setBusy]=useState(false); async function submit(e:any){e.preventDefault();setNotice("");if(!supabase){setNotice("Falta conectar Supabase: configuraremos la URL y la clave publicable en Vercel.");return;}setBusy(true);try{const result=mode==="signup"?await supabase.auth.signUp({email,password}):await supabase.auth.signInWithPassword({email,password});if(result.error)throw result.error;setNotice(mode==="signup"?"Solicitud enviada. Revisa tu correo si se requiere confirmación.":"Inicio de sesión correcto. El panel de perfil se construirá en la siguiente etapa.");}catch(err:any){setNotice(err?.message||"No se pudo completar la solicitud.");}finally{setBusy(false);}}return <main><nav className="nav"><a className="brand" href="#"><span className="mark">☎<b>+</b></span><span>CALL <strong>EMERGENCY</strong><small>Tu llamada puede salvar vidas</small></span></a><a className="navlink" href="#acceso">Mi cuenta</a></nav><section className="hero"><div><div className="eyebrow"><i/> IDENTIFICACIÓN PARA EMERGENCIAS</div><h1>En una emergencia,<br/><span>cada segundo cuenta.</span></h1><p>Una identificación QR que ayuda a comunicar información esencial y contactar a tus seres queridos cuando más importa.</p><a className="primary" href="#acceso">Comenzar ahora <span>↗</span></a><div className="trust">✓ Tus datos deben estar protegidos y bajo tu control.</div></div><div className="visual"><div className="halo"></div><div className="phone"><div className="phoneTop">CALL EMERGENCY <b>●</b></div><div className="shield">✚</div><h3>Perfil de emergencia</h3><p className="muted">Información esencial</p><div className="fakeRow"><span>Nombre</span><b>María (ejemplo)</b></div><div className="fakeRow"><span>Contacto de emergencia</span><b>Contacto autorizado</b></div><div className="qr">▦ <span>ESCANEA EN CASO DE EMERGENCIA</span></div></div><div className="floating float1">✓ <span><b>Acceso controlado</b><small>Privacidad primero</small></span></div><div className="floating float2">⌁ <span><b>QR personalizado</b><small>Un perfil por persona</small></span></div></div></section><section className="features"><div><i>⌁</i><h3>Acceso rápido</h3><p>Un QR para abrir un perfil desde el celular.</p></div><div><i>✚</i><h3>Información controlada</h3><p>La información pública se limitará a lo necesario.</p></div><div><i>♡</i><h3>Contactos importantes</h3><p>Facilita avisar a tus seres queridos.</p></div></section><section id="acceso" className="access"><div><div className="eyebrow"><i/> TU CUENTA</div><h2>Tu perfil, bajo tu control.</h2><p>Crea una cuenta para comenzar. Este formulario se conectará con Supabase al configurar sus credenciales.</p></div><form className="form" onSubmit={submit}><div className="tabs"><button type="button" className={mode==="signup"?"active":""} onClick={()=>{setMode("signup");setNotice("")}}>Crear cuenta</button><button type="button" className={mode==="login"?"active":""} onClick={()=>{setMode("login");setNotice("")}}>Iniciar sesión</button></div><label>Correo electrónico<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="tu@correo.com"/></label><label>Contraseña<input type="password" required minLength={8} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mínimo 8 caracteres"/></label><button className="submit" disabled={busy}>{busy?"Procesando…":mode==="signup"?"Crear mi cuenta":"Ingresar"} →</button>{notice&&<p className="notice" role="status">{notice}</p>}<p className="smallprint">Prototipo en construcción. No introduzcas datos médicos ni información sensible real.</p></form></section><footer><span>CALL <strong>EMERGENCY</strong> · Tu llamada puede salvar vidas</span><span>Prototipo en desarrollo</span></footer></main>}\n
+"use client";
+
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+export default function Home() {
+  const [mode, setMode] = useState<"signup" | "login">("signup");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [notice, setNotice] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setNotice("");
+
+    if (!supabase) {
+      setNotice("Falta conectar Supabase. Revisa las variables de Vercel.");
+      return;
+    }
+
+    setBusy(true);
+
+    try {
+      const result =
+        mode === "signup"
+          ? await supabase.auth.signUp({ email, password })
+          : await supabase.auth.signInWithPassword({ email, password });
+
+      if (result.error) throw result.error;
+
+      setNotice(
+        mode === "signup"
+          ? "Solicitud enviada. Revisa tu correo si se requiere confirmación."
+          : "Inicio de sesión correcto."
+      );
+    } catch (err: unknown) {
+      setNotice(
+        err instanceof Error
+          ? err.message
+          : "No se pudo completar la solicitud."
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <main>
+      <nav className="nav">
+        <a className="brand" href="#">
+          <span className="mark">☎<b>+</b></span>
+          <span>
+            CALL <strong>EMERGENCY</strong>
+            <small>Tu llamada puede salvar vidas</small>
+          </span>
+        </a>
+        <a className="navlink" href="#acceso">Mi cuenta</a>
+      </nav>
+
+      <section className="hero">
+        <div>
+          <div className="eyebrow">
+            <i /> IDENTIFICACIÓN PARA EMERGENCIAS
+          </div>
+          <h1>
+            En una emergencia,
+            <br />
+            <span>cada segundo cuenta.</span>
+          </h1>
+          <p>
+            Una identificación QR que ayuda a comunicar información esencial
+            y contactar a tus seres queridos cuando más importa.
+          </p>
+          <a className="primary" href="#acceso">
+            Comenzar ahora <span>↗</span>
+          </a>
+          <div className="trust">
+            ✓ Tus datos deben estar protegidos y bajo tu control.
+          </div>
+        </div>
+
+        <div className="visual">
+          <div className="halo" />
+          <div className="phone">
+            <div className="phoneTop">CALL EMERGENCY <b>●</b></div>
+            <div className="shield">✚</div>
+            <h3>Perfil de emergencia</h3>
+            <p className="muted">Información esencial</p>
+            <div className="fakeRow">
+              <span>Nombre</span>
+              <b>María (ejemplo)</b>
+            </div>
+            <div className="fakeRow">
+              <span>Contacto de emergencia</span>
+              <b>Contacto autorizado</b>
+            </div>
+            <div className="qr">
+              ▦ <span>ESCANEA EN CASO DE EMERGENCIA</span>
+            </div>
+          </div>
+          <div className="floating float1">
+            ✓ <span><b>Acceso controlado</b><small>Privacidad primero</small></span>
+          </div>
+          <div className="floating float2">
+            ⌁ <span><b>QR personalizado</b><small>Un perfil por persona</small></span>
+          </div>
+        </div>
+      </section>
+
+      <section className="features">
+        <div>
+          <i>⌁</i>
+          <h3>Acceso rápido</h3>
+          <p>Un QR para abrir un perfil desde el celular.</p>
+        </div>
+        <div>
+          <i>✚</i>
+          <h3>Información controlada</h3>
+          <p>La información pública se limitará a lo necesario.</p>
+        </div>
+        <div>
+          <i>♡</i>
+          <h3>Contactos importantes</h3>
+          <p>Facilita avisar a tus seres queridos.</p>
+        </div>
+      </section>
+
+      <section id="acceso" className="access">
+        <div>
+          <div className="eyebrow"><i /> TU CUENTA</div>
+          <h2>Tu perfil, bajo tu control.</h2>
+          <p>
+            Crea una cuenta para comenzar. Este prototipo utiliza Supabase
+            para el registro y el inicio de sesión.
+          </p>
+        </div>
+
+        <form className="form" onSubmit={submit}>
+          <div className="tabs">
+            <button
+              type="button"
+              className={mode === "signup" ? "active" : ""}
+              onClick={() => {
+                setMode("signup");
+                setNotice("");
+              }}
+            >
+              Crear cuenta
+            </button>
+            <button
+              type="button"
+              className={mode === "login" ? "active" : ""}
+              onClick={() => {
+                setMode("login");
+                setNotice("");
+              }}
+            >
+              Iniciar sesión
+            </button>
+          </div>
+
+          <label>
+            Correo electrónico
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="tu@correo.com"
+            />
+          </label>
+
+          <label>
+            Contraseña
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 8 caracteres"
+            />
+          </label>
+
+          <button className="submit" disabled={busy}>
+            {busy
+              ? "Procesando…"
+              : mode === "signup"
+                ? "Crear mi cuenta"
+                : "Ingresar"} →
+          </button>
+
+          {notice && <p className="notice" role="status">{notice}</p>}
+
+          <p className="smallprint">
+            Prototipo en construcción. No introduzcas datos médicos ni
+            información sensible real.
+          </p>
+        </form>
+      </section>
+
+      <footer>
+        <span>
+          CALL <strong>EMERGENCY</strong> · Tu llamada puede salvar vidas
+        </span>
+        <span>Prototipo en desarrollo</span>
+      </footer>
+    </main>
+  );
+}
