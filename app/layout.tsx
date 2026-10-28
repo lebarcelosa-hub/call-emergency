@@ -1,0 +1,1 @@
+import "./globals.css";\nexport const metadata = { title: "Call Emergency | Tu llamada puede salvar vidas", description: "Identificación de emergencia mediante código QR." };\nexport default function RootLayout({children}:{children:React.ReactNode}) { return <html lang="es"><body>{children}</body></html>; }\n
